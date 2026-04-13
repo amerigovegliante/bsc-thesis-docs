@@ -1,0 +1,5 @@
+include:
+  - docs
+  - .nojekyll
+
+exclude: [node_modules, vendor]

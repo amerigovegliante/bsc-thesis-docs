@@ -24,25 +24,6 @@ jobs:
       - name: Setup Typst
         run: sudo snap install typst
 
-      - name: Compile and Inject PDFs
-        run: |
-          # 1. Crea la cartella assets/pdf dentro la sorgente 'site'
-          mkdir -p ./site/assets/pdf
-          
-          # 2. Forza la creazione di un file .nojekyll
-          touch ./site/.nojekyll
-          
-          # 3. Compila i file .typ dalla cartella esterna alla cartella assets
-          for file in ./docs/*.typ; do
-            [ -e "$file" ] || continue
-            filename=$(basename "$file" .typ)
-            echo "Compiling $file to ./site/assets/pdf/$filename.pdf"
-            typst compile "$file" "./site/assets/pdf/$filename.pdf"
-          done
-          
-          # 4. Verifica finale nei log della Action
-          ls -R ./site/assets/pdf/
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
@@ -51,6 +32,23 @@ jobs:
         with:
           source: ./site
           destination: ./_site
+
+      # COPIAMO I PDF DOPO LA BUILD DI JEKYLL
+      - name: Inject Typst PDFs into final site
+        run: |
+          # Crea la cartella direttamente nel pacchetto pronto per il deploy
+          mkdir -p ./_site/assets/pdf
+          
+          # Compila i file e mettili direttamente in _site
+          for file in ./docs/*.typ; do
+            [ -e "$file" ] || continue
+            filename=$(basename "$file" .typ)
+            echo "Compiling $file directly to final destination..."
+            typst compile "$file" "./_site/assets/pdf/$filename.pdf"
+          done
+          
+          # Verifica finale: se non vedi file qui, il comando find non trova la cartella ./docs
+          ls -R ./_site/assets/pdf/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -20,11 +20,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Typst
-        uses: chiyadev/setup-typst@v1
-        with:
-          version: 'latest'
+      
+      - name: Install typst
+        run: sudo snap install typst
 
       - name: Compile Typst files
         run: |

@@ -21,16 +21,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Install typst
-        run: sudo snap install typst
+      - name: Setup Typst
+        uses: chiyadev/setup-typst@v1
 
       - name: Compile Typst files
         run: |
-          mkdir -p ./docs
+          # Creiamo la cartella DENTRO la sorgente di Jekyll
+          mkdir -p ./site/assets/pdf
+          
+          # Cerchiamo i .typ e salviamoli nella cartella assets del sito
           for file in $(find . -name "*.typ"); do
             filename=$(basename "$file" .typ)
-            typst compile "$file" "./docs/$filename.pdf"
+            typst compile "$file" "./site/assets/pdf/$filename.pdf"
           done
+          
+          # Debug: stampa i file creati per sicurezza nei log
+          ls -R ./site/assets/pdf
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

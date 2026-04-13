@@ -24,16 +24,25 @@ jobs:
       - name: Setup Typst
         run: sudo snap install typst
 
-      - name: Compile Typst files
+      - name: Compile and Inject PDFs
         run: |
+          # Crea la cartella di destinazione dentro 'site'
           mkdir -p ./site/docs
           
-          for file in $(find ./docs -name "*.typ"); do
+          # Crea un file .nojekyll dentro site per evitare filtri
+          touch ./site/.nojekyll
+          
+          # Compila ogni .typ trovato nella cartella ./docs esterna
+          # Usiamo find con percorso assoluto per evitare errori di loop
+          for file in $(find $(pwd)/docs -name "*.typ"); do
             filename=$(basename "$file" .typ)
+            echo "Compiling $file..."
             typst compile "$file" "./site/docs/$filename.pdf"
           done
           
-          cp ./docs/*.pdf ./site/docs/ 2>/dev/null || true
+          # Verifica log: mostra cosa è stato creato
+          echo "Contenuto di ./site/docs/:"
+          ls ./site/docs/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

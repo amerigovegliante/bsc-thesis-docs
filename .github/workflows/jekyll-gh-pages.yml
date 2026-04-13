@@ -26,23 +26,22 @@ jobs:
 
       - name: Compile and Inject PDFs
         run: |
-          # Crea la cartella di destinazione dentro 'site'
-          mkdir -p ./site/docs
+          # 1. Crea la cartella assets/pdf dentro la sorgente 'site'
+          mkdir -p ./site/assets/pdf
           
-          # Crea un file .nojekyll dentro site per evitare filtri
+          # 2. Forza la creazione di un file .nojekyll
           touch ./site/.nojekyll
           
-          # Compila ogni .typ trovato nella cartella ./docs esterna
-          # Usiamo find con percorso assoluto per evitare errori di loop
-          for file in $(find $(pwd)/docs -name "*.typ"); do
+          # 3. Compila i file .typ dalla cartella esterna alla cartella assets
+          for file in ./docs/*.typ; do
+            [ -e "$file" ] || continue
             filename=$(basename "$file" .typ)
-            echo "Compiling $file..."
-            typst compile "$file" "./site/docs/$filename.pdf"
+            echo "Compiling $file to ./site/assets/pdf/$filename.pdf"
+            typst compile "$file" "./site/assets/pdf/$filename.pdf"
           done
           
-          # Verifica log: mostra cosa è stato creato
-          echo "Contenuto di ./site/docs/:"
-          ls ./site/docs/
+          # 4. Verifica finale nei log della Action
+          ls -R ./site/assets/pdf/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

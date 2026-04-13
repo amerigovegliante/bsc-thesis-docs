@@ -26,17 +26,14 @@ jobs:
 
       - name: Compile Typst files
         run: |
-          # Creiamo la cartella DENTRO la sorgente di Jekyll
-          mkdir -p ./site/assets/pdf
+          mkdir -p ./site/docs
           
-          # Cerchiamo i .typ e salviamoli nella cartella assets del sito
-          for file in $(find . -name "*.typ"); do
+          for file in $(find ./docs -name "*.typ"); do
             filename=$(basename "$file" .typ)
-            typst compile "$file" "./site/assets/pdf/$filename.pdf"
+            typst compile "$file" "./site/docs/$filename.pdf"
           done
           
-          # Debug: stampa i file creati per sicurezza nei log
-          ls -R ./site/assets/pdf
+          cp ./docs/*.pdf ./site/docs/ 2>/dev/null || true
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

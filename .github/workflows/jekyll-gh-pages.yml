@@ -24,31 +24,29 @@ jobs:
       - name: Setup Typst
         run: sudo snap install typst
 
+      # 1. Compiliamo i PDF PRIMA della build in una cartella che Jekyll sicuramente vedrà
+      - name: Compile Typst PDFs
+        run: |
+          # Creiamo la cartella dentro site/assets (posto sicuro per Jekyll)
+          mkdir -p ./site/assets/pdf
+          
+          # Compila i file .typ dalla cartella esterna ./docs
+          for file in ./docs/*.typ; do
+            [ -e "$file" ] || continue
+            filename=$(basename "$file" .typ)
+            echo "Compiling $file..."
+            typst compile "$file" "./site/assets/pdf/$filename.pdf"
+          done
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      # 2. Build di Jekyll - Ora troverà i PDF già pronti in assets/pdf
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./site
           destination: ./_site
-
-      # COPIAMO I PDF DOPO LA BUILD DI JEKYLL
-      - name: Inject Typst PDFs into final site
-        run: |
-          # Crea la cartella direttamente nel pacchetto pronto per il deploy
-          mkdir -p ./_site/assets/pdf
-          
-          # Compila i file e mettili direttamente in _site
-          for file in ./docs/*.typ; do
-            [ -e "$file" ] || continue
-            filename=$(basename "$file" .typ)
-            echo "Compiling $file directly to final destination..."
-            typst compile "$file" "./_site/assets/pdf/$filename.pdf"
-          done
-          
-          # Verifica finale: se non vedi file qui, il comando find non trova la cartella ./docs
-          ls -R ./_site/assets/pdf/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

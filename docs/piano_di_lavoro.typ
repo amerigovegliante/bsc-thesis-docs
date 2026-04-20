@@ -1,5 +1,5 @@
 // ============================================================
-// CONFIGURAZIONE PAGINA
+// CONFIGURAZIONE DOCUMENTO
 // ============================================================
 #set document(
   title: "Piano di Lavoro",
@@ -8,26 +8,36 @@
 
 #set page(
   paper: "a4",
-  margin: (top: 1.25cm, bottom: 4cm, left: 3cm, right: 3cm),
-  header: context [
-    #set text(size: 10pt)
-    #grid(
-      columns: (1fr, auto),
-      align(left)[#text(weight: "bold")[#smallcaps({
-        let h = headings.before(here())
-        if h.len() > 0 { h.last().body } else []
-      })]],
-      image("unipd.png", width: 2cm),
-    )
-    #line(length: 100%, stroke: 0.8pt + black)
-  ],
+  margin: (top: 3cm, bottom: 4cm, left: 3cm, right: 3cm),
+  header: context {
+    if counter(page).get().first() > 2 [
+      #set text(size: 10pt)
+      #grid(
+        columns: (1fr, auto),
+        gutter: 0pt,
+        align(left + horizon)[
+          #text(weight: "bold")[
+            #{
+              let h = query(heading.where(level: 1).before(here()))
+              if h.len() > 0 { h.last().body }
+            }
+          ]
+        ],
+        align(right + horizon)[
+          #image("unipd.png", width: 1.8cm)
+        ],
+      )
+      #line(length: 100%, stroke: 0.8pt + black)
+    ]
+  },
   footer: context [
     #line(length: 100%, stroke: 0.8pt + black)
     #v(2pt)
     #grid(
       columns: (1fr, auto),
-      align(left)[Piano di Lavoro],
-      align(right)[#counter(page).display("1")],
+      gutter: 0pt,
+      align(left)[#text(size: 10pt)[Piano di Lavoro]],
+      align(right)[#text(size: 10pt)[#counter(page).display("1")]],
     )
   ],
 )
@@ -41,71 +51,59 @@
 #set par(
   justify: true,
   leading: 0.75em,
+  spacing: 0.75em,
 )
 
 #set heading(numbering: "1.1")
 
-// ============================================================
-// STILI TABELLE
-// ============================================================
 #set table(
-  stroke: 0.2pt + black,
-  inset: 10pt,
+  stroke: 0.3pt + black,
+  inset: 9pt,
 )
 
 // ============================================================
 // PRIMA PAGINA
 // ============================================================
-#page(
-  header: none,
-  footer: context [
-    #line(length: 100%, stroke: 0.8pt + black)
-    #v(2pt)
-    #align(center)[#counter(page).display("1")]
-  ],
-)[
-  #align(center)[
-    #image("unipd.png", width: 8cm)
-    #v(0.5cm)
-    #text(size: 14pt)[Laurea Triennale in Informatica]
-    #v(0.5cm)
-    #line(length: 100%, stroke: 1pt)
-    #v(0.4cm)
-    #text(size: 22pt, weight: "bold")[PIANO DI LAVORO]
-    #v(0.4cm)
-    #line(length: 100%, stroke: 1pt)
-    #v(1cm)
-
-    #text(size: 16pt, weight: "bold")[Amerigo Vegliante]
-    #v(0.2cm)
-    #text(size: 13pt, style: "italic")[2111004]
-    #v(2cm)
-
-    #text(size: 13pt)[
-      Dipartimento di Matematica "Tullio Levi-Civita" \
-      Università degli Studi di Padova
-    ]
-    #v(1.5cm)
-
-    #v(1fr)
-    #link("https://www.math.unipd.it/")[https://www.math.unipd.it/]
+#align(center)[
+  #v(1cm)
+  #image("unipd.png", width: 7cm)
+  #v(0.6cm)
+  #text(size: 13pt)[Laurea Triennale in Informatica]
+  #v(0.5cm)
+  #line(length: 100%, stroke: 1pt + black)
+  #v(0.4cm)
+  #text(size: 22pt, weight: "bold")[PIANO DI LAVORO]
+  #v(0.4cm)
+  #line(length: 100%, stroke: 1pt + black)
+  #v(1.2cm)
+  #text(size: 17pt, weight: "bold")[Amerigo Vegliante]
+  #v(0.2cm)
+  #text(size: 13pt, style: "italic")[2111004]
+  #v(2cm)
+  #text(size: 13pt)[
+    Dipartimento di Matematica "Tullio Levi-Civita" \
+    Università degli Studi di Padova
   ]
+  #v(1fr)
+  #link("https://www.math.unipd.it/")[https://www.math.unipd.it/]
+  #v(1cm)
 ]
+
+#pagebreak()
 
 // ============================================================
 // INDICE
 // ============================================================
-#page[
-  #outline(
-    title: "Indice",
-    indent: auto,
-  )
-]
+#outline(
+  title: "Indice",
+  indent: auto,
+)
+
+#pagebreak()
 
 // ============================================================
-// CONTENUTO
+// SEZIONE 1 — CONTATTI
 // ============================================================
-
 = Contatti
 
 == Studente
@@ -128,11 +126,14 @@
 
 #pagebreak()
 
+// ============================================================
+// SEZIONE 2 — SCOPO DELLA TESI
+// ============================================================
 = Scopo della tesi
 
 == Contesto e motivazione
 
-Il lavoro di tesi si inserisce nel filone di ricerca inaugurato dalla tesi triennale di Ane-Marie Margarit (Università degli Studi di Padova, A.A. 2024-2025), che ha sviluppato un sistema predittivo del prezzo di Bitcoin basato su Sentiment Analysis con VADER e modelli di Machine Learning classici (Logistic Regression) applicati a post del social network Mastodon. Quel lavoro ha dimostrato la fattibilità dell'approccio identificandone chiaramente i limiti principali: soli 12.190 post disponibili, 55 settimane di overlap tra dati di sentiment e di prezzo, e un'accuratezza predittiva di circa il 45--47%, appena superiore alla casualità in un contesto binario.
+Il lavoro di tesi si inserisce nel filone di ricerca inaugurato dalla tesi triennale di Ane-Marie Margarit (Università degli Studi di Padova, A.A. 2024--2025), che ha sviluppato un sistema predittivo del prezzo di Bitcoin basato su Sentiment Analysis con VADER e modelli di Machine Learning classici (Logistic Regression) applicati a post del social network Mastodon. Quel lavoro ha dimostrato la fattibilità dell'approccio identificandone chiaramente i limiti principali: soli 12.190 post disponibili, 55 settimane di overlap tra dati di sentiment e di prezzo, e un'accuratezza predittiva di circa il 45--47%, appena superiore alla casualità in un contesto binario.
 
 La letteratura recente offre una prospettiva importante su questi risultati: predire la direzione del prezzo di Bitcoin su base settimanale è un problema estremamente difficile, e sistemi ben più sofisticati --- inclusi LSTM, LLM con memoria contestuale e framework multi-agente --- raramente superano il 52% di accuratezza su questo task specifico (Mudbari, 2025). Il vero contributo scientifico non risiede quindi nel "battere il mercato", bensì nel costruire un sistema più ricco e interpretabile che: (i) utilizzi una fonte dati più strutturata e meno rumorosa dei social media; (ii) sfrutti un LLM specifico per il dominio finanziario al posto di VADER; (iii) integri lo storico dei prezzi con indicatori tecnici consolidati; (iv) valuti l'utilità pratica tramite simulazione di una strategia di trading (_backtesting_).
 
@@ -159,13 +160,13 @@ Il dataset verrà costruito su tre fonti:
 
 === Sentiment Analysis con FinBERT
 
-Il modello principale sarà *FinBERT* (Huang et al., 2023), un modello BERT fine-tuned su testi finanziari, particolarmente adatto per notizie e report di mercato. FinBERT sarà scaricato gratuitamente da HuggingFace e utilizzato localmente tramite Google Colab (GPU T4). L'inferenza verrà eseguita a blocchi con salvataggio progressivo su Google Drive e versionamento del codice tramite GitHub, così da garantire la robustezza rispetto alle disconnessioni di sessione.
+Il modello principale sarà *FinBERT* (Huang et al., 2023), un modello BERT fine-tuned su testi finanziari, particolarmente adatto per notizie e report di mercato. FinBERT sarà scaricato gratuitamente da HuggingFace e utilizzato localmente tramite Google Colab (GPU T4). L'inferenza verrà eseguita a blocchi con salvataggio progressivo, il codice versionato tramite GitHub, così da garantire la robustezza rispetto alle disconnessioni di sessione.
 
 FinBERT verrà confrontato quantitativamente con *VADER* come baseline lessicale, documentando il miglioramento in termini di correlazione tra sentiment e variazione di prezzo. Questo confronto costituisce uno dei contributi principali della tesi rispetto al lavoro triennale di partenza.
 
 === Modello predittivo
 
-Le feature estratte --- sentiment aggregato settimanale, variazione del sentiment rispetto alla settimana precedente, e indicatori tecnici di prezzo --- alimenteranno un classificatore binario (UP/DOWN del prezzo nella settimana successiva). Rispetto alla Logistic Regression della tesi triennale, verrà sperimentato *XGBoost*, già ampiamente validato in letteratura per questo task e addestrabile nei tempi disponibili su hardware ordinario. L'analisi dell'importanza delle feature (feature importance) permetterà di quantificare il contributo relativo del sentiment rispetto agli indicatori tecnici.
+Le feature estratte --- sentiment aggregato settimanale, variazione del sentiment rispetto alla settimana precedente, e indicatori tecnici di prezzo --- alimenteranno un classificatore binario (UP/DOWN del prezzo nella settimana successiva). Rispetto alla Logistic Regression della tesi triennale, verrà sperimentato *XGBoost*, già ampiamente validato in letteratura per questo task e addestrabile nei tempi disponibili su hardware ordinario. L'analisi dell'importanza delle feature (_feature importance_) permetterà di quantificare il contributo relativo del sentiment rispetto agli indicatori tecnici.
 
 === Backtesting della strategia di trading
 
@@ -179,15 +180,18 @@ Tali metriche verranno confrontate con le seguenti baseline: *Buy and Hold*, *MA
 
 #pagebreak()
 
+// ============================================================
+// SEZIONE 3 — PIANIFICAZIONE
+// ============================================================
 = Pianificazione del lavoro
 
 == Distribuzione delle ore
 
 #align(center)[
   #table(
-    columns: (3cm, 8cm),
-    align: (center, left),
-    fill: (x, y) => if y == 0 { luma(220) } else if calc.odd(y) { luma(245) } else { white },
+    columns: (3cm, 9cm),
+    align: (center + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
     table.header(
       [*Durata in ore*], [*Descrizione attività*],
     ),
@@ -209,6 +213,9 @@ Tali metriche verranno confrontate con le seguenti baseline: *Buy and Hold*, *MA
 
 #pagebreak()
 
+// ============================================================
+// SEZIONE 4 — OBIETTIVI
+// ============================================================
 = Obiettivi
 
 Si farà riferimento ai requisiti secondo le seguenti notazioni:
@@ -223,10 +230,12 @@ Le sigle precedentemente indicate saranno seguite da un numero, identificativo d
 
 #align(center)[
   #table(
-    columns: (2.5cm, 8cm),
-    align: (center, left),
-    fill: (x, y) => if y == 0 or y == 5 or y == 8 { luma(200) } else if calc.odd(y) { luma(245) } else { white },
-    table.cell(colspan: 2, align: center)[*Obbligatorio*],
+    columns: (2.5cm, 9cm),
+    align: (center + horizon, left + horizon),
+    fill: (_, y) => if y == 0 or y == 5 or y == 8 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header(
+      table.cell(colspan: 2, align: center)[*Obbligatorio*],
+    ),
     [*OB 1*],
     [Costruzione di un dataset di notizie finanziarie crypto (CoinDesk, CoinTelegraph) con copertura temporale di almeno 2 anni, allineato allo storico dei prezzi di Bitcoin e agli indicatori tecnici calcolati.],
     [*OB 2*],

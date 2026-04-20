@@ -9,16 +9,19 @@
 #set page(
   paper: "a4",
   margin: (top: 1.25cm, bottom: 4cm, left: 3cm, right: 3cm),
-  header: [
+  header: context [
     #set text(size: 10pt)
     #grid(
       columns: (1fr, auto),
-      align(left)[#text(weight: "bold")[#smallcaps(context { headings.at(here()).first().body })]],
+      align(left)[#text(weight: "bold")[#smallcaps({
+        let h = headings.before(here())
+        if h.len() > 0 { h.last().body } else []
+      })]],
       image("unipd.png", width: 2cm),
     )
     #line(length: 100%, stroke: 0.8pt + black)
   ],
-  footer: [
+  footer: context [
     #line(length: 100%, stroke: 0.8pt + black)
     #v(2pt)
     #grid(
@@ -55,7 +58,7 @@
 // ============================================================
 #page(
   header: none,
-  footer: [
+  footer: context [
     #line(length: 100%, stroke: 0.8pt + black)
     #v(2pt)
     #align(center)[#counter(page).display("1")]
